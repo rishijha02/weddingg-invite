@@ -19,3 +19,89 @@
 .wedding-scene{width:min(100%,440px);aspect-ratio:1;margin:27px auto 22px;padding:0;border:1px solid #c9b992;border-radius:3px;background:#47342e;box-shadow:0 14px 32px #35483624}.ceremony-image{display:block;width:100%;height:100%;object-fit:cover;animation:ceremony-zoom 18s ease-in-out infinite alternate}.wedding-scene .scene-petal{z-index:2;text-shadow:0 1px 5px #59352c66}@keyframes ceremony-zoom{from{transform:scale(1)}to{transform:scale(1.055)}}
 @media(max-width:700px){.wedding-scene{width:min(100%,340px);margin:23px auto 19px}}
 @media(prefers-reduced-motion:reduce){.ceremony-image{animation:none}}
+
+/* Tap-to-open invitation and a gentle, animated Ganeshji welcome */
+.welcome-screen{position:fixed;z-index:50;inset:0;display:grid;place-items:center;padding:22px;background:linear-gradient(145deg,#1d3028ed,#24392feF),url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1800&q=80') center/cover;color:#fff;animation:welcome-appear .8s ease-out both}
+.welcome-card{width:min(100%,440px);padding:28px 30px 30px;text-align:center;border:1px solid #dfc58d9c;background:linear-gradient(160deg,#31473ee8,#24382fea);box-shadow:0 24px 80px #101b18a8;backdrop-filter:blur(5px)}
+.welcome-ornament{display:block;color:#e3c38c;font:38px 'Cormorant Garamond',serif}
+.ganesha-art{display:block;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 6px 16px #efc78338)}
+.welcome-ganesha{width:152px;height:152px;margin:4px auto 0}
+.ganesha-halo{transform-origin:80px 80px;animation:ganesha-halo-turn 32s linear infinite}
+.ganesha-trunk{transform-origin:82px 70px;animation:ganesha-blessing 2.7s ease-in-out infinite}
+.welcome-blessing{margin:0;color:#f0d7a8;font-size:18px}
+.welcome-kicker{font-size:8px;letter-spacing:.22em;color:#dfc89f;margin:14px 0 10px}
+.welcome-card h1{font:400 clamp(48px,12vw,68px)/.95 'Cormorant Garamond',serif;margin:0;color:#fff5e3}
+.welcome-card h1 i{font-weight:400;color:#e2c49a}
+.welcome-date{font-size:9px;letter-spacing:.22em;color:#e8d8ba;margin:17px 0 20px}
+.open-invitation{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:13px 20px;border:1px solid #e5ca91;background:#e5ca91;color:#2f4539;font-size:11px;letter-spacing:.04em;cursor:pointer;transition:transform .2s,background .2s}
+.open-invitation:hover{transform:translateY(-2px);background:#f0d7a8}
+.welcome-hint{font:italic 14px 'Cormorant Garamond',serif;color:#eee2ce;margin:13px 0 0}
+.hero-ganesha{position:absolute;z-index:1;top:4%;left:50%;transform:translateX(-50%);width:102px;height:125px;text-align:center;filter:drop-shadow(0 4px 15px #16231db0)}
+.hero-ganesha .ganesha-art{width:100px;height:100px;margin:auto}
+.ganesha-mantra{display:block;white-space:nowrap;color:#f1d8aa;text-shadow:0 1px 8px #18251f;font-size:11px;margin-top:-5px}
+.invitation-opened .hero-photo{animation:hero-cinema 22s ease-in-out infinite alternate}
+.invitation-opened .hero-content{animation:hero-content-reveal 1.1s .2s both}
+@keyframes welcome-appear{from{opacity:0}to{opacity:1}}
+@keyframes ganesha-halo-turn{to{transform:rotate(360deg)}}
+@keyframes ganesha-blessing{0%,100%{transform:rotate(0)}50%{transform:rotate(3deg)}}
+@keyframes hero-cinema{from{transform:scale(1.02);background-position:center 46%}to{transform:scale(1.12);background-position:center 52%}}
+@keyframes hero-content-reveal{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:700px){.welcome-card{padding:22px 18px 24px}.welcome-ganesha{width:135px;height:135px}.hero-ganesha{top:5%;width:86px;height:108px}.hero-ganesha .ganesha-art{width:86px;height:86px}.ganesha-mantra{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.welcome-screen,.ganesha-halo,.ganesha-trunk,.invitation-opened .hero-photo,.invitation-opened .hero-content{animation:none}}
+
+/* During the invitation's opening sequence, each section fills the viewport like a video scene. */
+.story-playing{scroll-snap-type:y mandatory;scroll-behavior:smooth}
+.story-playing>.hero,.story-playing>.invitation,.story-playing>.couple,.story-playing>.event,.story-playing>.coming,.story-playing>.footer{height:100svh;min-height:100svh;max-height:100svh;scroll-snap-align:start;scroll-snap-stop:always;overflow:hidden;}
+.story-playing>.hero{padding:0}
+.story-playing>.invitation{display:grid;place-items:center;padding-top:55px;padding-bottom:55px}
+.story-playing>.couple{display:flex;flex-direction:column;justify-content:center;padding-top:36px;padding-bottom:36px}
+.story-playing .family-grid{margin-top:28px}
+.story-playing .family-card{min-height:0;padding-top:28px;padding-bottom:26px}
+.story-playing>.event{padding-top:6vh;padding-bottom:6vh}
+.story-playing>.coming{display:grid;place-items:center;padding-top:24px;padding-bottom:24px}
+.story-playing .wedding-scene{width:min(34vh,360px);margin:16px auto 12px}
+.story-playing>.footer{display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:35px;padding-bottom:25px}
+.story-playing .footer-small{margin-top:25px}
+@media(max-width:700px){
+  .story-playing>.invitation{padding:30px 22px}
+  .story-playing>.couple{display:block;overflow-y:auto;padding:32px 18px}
+  .story-playing .couple-heading .eyebrow{margin-bottom:9px}
+  .story-playing .couple-heading h2{font-size:38px}
+  .story-playing .family-grid{grid-template-columns:1fr;gap:9px;margin-top:15px}
+  .story-playing .family-card{padding:12px 14px}
+  .story-playing .family-card .card-sprig,.story-playing .family-card .card-hindi{display:none}
+  .story-playing .family-card h3{font-size:30px}
+  .story-playing .family-card .eyebrow{margin-bottom:6px}
+  .story-playing .family-rule{margin-bottom:8px}
+  .story-playing .parents,.story-playing .grandparent{font-size:13px;line-height:1.45;margin-bottom:6px}
+  .story-playing .address{margin-top:8px}
+  .story-playing>.event{display:flex;flex-direction:column;justify-content:center;padding:20px 22px}
+  .story-playing .event-photo{width:100%;height:25svh;min-height:150px}
+  .story-playing .event-panel{width:calc(100% - 22px);margin:-16px auto 0;padding:20px 18px;min-height:0}
+  .story-playing .event-panel .eyebrow{margin-bottom:6px}
+  .story-playing .event-flower{display:none}
+  .story-playing .event h2{font-size:42px}
+  .story-playing .event-panel>.hindi{margin:2px 0 12px}
+  .story-playing .event-rule{margin:12px auto}
+  .story-playing .venue{margin-bottom:12px}
+  .story-playing>.coming{padding:18px 18px}
+  .story-playing .coming h2{font-size:42px}
+  .story-playing .coming-copy{font-size:15px;margin:8px 0}
+  .story-playing .wedding-scene{width:min(34svh,280px);margin:9px auto}
+  .story-playing .date-placeholder{padding:8px 14px}
+  .story-playing .wedding-map{margin-top:11px;padding:9px 13px}
+}
+
+.invitation-layout{display:grid;grid-template-columns:minmax(180px,.9fr) minmax(0,1.35fr);align-items:center;gap:clamp(18px,4vw,48px);width:min(100%,1050px);margin:auto}
+.invitation-message{text-align:center;min-width:0}
+.invitation-side{display:flex;align-items:center;justify-content:center;min-width:0;margin:0}
+.single-couple-side{position:relative}
+.couple-photo{display:block;width:min(100%,310px);aspect-ratio:1;object-fit:contain;mix-blend-mode:multiply;filter:drop-shadow(0 12px 18px #44342920);animation:single-photo-arrives 1s cubic-bezier(.2,.75,.25,1) both, single-photo-float 5s 1s ease-in-out infinite}
+@keyframes single-photo-arrives{from{transform:translateX(-24px);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes single-photo-float{0%,100%{translate:0 0}50%{translate:0 -5px}}
+@media(max-width:700px){.invitation-layout{grid-template-columns:minmax(82px,36%) minmax(0,1fr);gap:12px}.couple-photo{width:100%}.invitation-message h2{font-size:clamp(30px,8.6vw,42px)}.invitation-message .invitation-copy{font-size:15px;line-height:1.55}.invitation-message .intro-hindi{font-size:15px;margin:14px 0}.invitation-message .invite-line{font-size:12px;margin:12px 0 18px}.invitation-message .names-line{flex-wrap:wrap;gap:7px;font-size:16px}}
+.story-playing .invitation-layout{gap:clamp(14px,3vw,32px)}
+.story-playing .couple-photo{width:min(100%,32vh,290px)}
+@media(max-width:700px){.story-playing .invitation-layout{grid-template-columns:minmax(74px,32%) minmax(0,1fr);gap:10px}.story-playing .couple-photo{width:100%}.story-playing .invitation-message h2{font-size:clamp(28px,7.8vw,36px)}.story-playing .invitation-message .eyebrow{font-size:8px;letter-spacing:.15em;margin-bottom:15px}.story-playing .invitation-message .invitation-copy{font-size:14px}}
+@media(prefers-reduced-motion:reduce){.couple-photo{animation:none}}
+.family-regards{margin:20px 0 4px;color:#e7d3ad;font:italic 16px/1.7 'Cormorant Garamond',serif}.family-regards .hindi{display:inline-block;margin-top:3px;color:#e7d3ad;font-size:13px}

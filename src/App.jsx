@@ -11,12 +11,31 @@ const themes = [
   { id: 'royal', name: 'Royal', color: '#414878' },
 ];
 
+function GaneshaArt({ className = '' }) {
+  return <svg className={className} viewBox="0 0 160 160" role="img" aria-label="Animated illustration of Lord Ganesha">
+    <circle className="ganesha-halo" cx="80" cy="80" r="70" fill="none" stroke="#e8c98d" strokeWidth="1" strokeDasharray="2 5"/>
+    <path d="M80 12 85 25 98 20 98 34 112 36 105 48 117 57 105 66" fill="none" stroke="#e8c98d" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M80 12 75 25 62 20 62 34 48 36 55 48 43 57 55 66" fill="none" stroke="#e8c98d" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M56 58C43 49 28 52 25 67c-2 12 8 22 24 22M104 58c13-9 28-6 31 9 2 12-8 22-24 22" fill="#d99e70" stroke="#f3d7a8" strokeWidth="2"/>
+    <path d="M54 51c0-19 11-31 26-31s26 12 26 31v28c0 18-11 30-26 30S54 97 54 79Z" fill="#d9a174" stroke="#f3d7a8" strokeWidth="2"/>
+    <path d="M62 53c3-5 8-5 12 0M86 53c4-5 9-5 12 0" fill="none" stroke="#593d32" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M81 57c-1 11-5 17-3 24 2 7 10 7 13 2 2-4 0-8-3-9" fill="none" stroke="#f1d1a5" strokeWidth="7" strokeLinecap="round" className="ganesha-trunk"/>
+    <path d="M74 42c2-9 10-9 12 0" fill="none" stroke="#a34d44" strokeWidth="3" strokeLinecap="round"/>
+    <circle cx="80" cy="38" r="3" fill="#e8c98d"/>
+    <path d="M63 110c-10 7-16 18-18 30h70c-2-12-8-23-18-30-5 5-10 7-17 7s-12-2-17-7Z" fill="#a84e46" stroke="#e8c98d" strokeWidth="2"/>
+    <path d="M67 114 80 138l13-24M80 117v23" fill="none" stroke="#f1d8a9" strokeWidth="2"/>
+    <circle cx="49" cy="128" r="3" fill="#efc887"/><circle cx="111" cy="128" r="3" fill="#efc887"/>
+  </svg>;
+}
+
 function App() {
+  const [opened, setOpened] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [theme, setTheme] = useState(() => localStorage.getItem('wedding-theme') || 'garden');
   const [customizeOpen, setCustomizeOpen] = useState(false);
   const [portrait, setPortrait] = useState('');
   const [uploadMessage, setUploadMessage] = useState('');
+  const [storyPlaying, setStoryPlaying] = useState(false);
   const audio = useRef(null);
   useEffect(() => {
     const excerptStart = 54;
@@ -42,6 +61,50 @@ function App() {
       } catch { setPlaying(false); }
     }
   };
+  const openInvitation = async () => {
+    setOpened(true);
+    setStoryPlaying(true);
+    if (!audio.current) return;
+    try {
+      audio.current.currentTime = 54;
+      await audio.current.play();
+      setPlaying(true);
+    } catch { setPlaying(false); }
+  };
+  useEffect(() => {
+    if (!opened || !storyPlaying) return undefined;
+    const scenes = ['#invitation', '.couple', '#celebration', '#wedding-day', '.footer'];
+    let index = 0;
+    const advance = () => {
+      if (index >= scenes.length) {
+        setStoryPlaying(false);
+        audio.current?.pause();
+        setPlaying(false);
+        return;
+      }
+      const scene = document.querySelector(scenes[index]);
+      if (!scene) {
+        setStoryPlaying(false);
+        audio.current?.pause();
+        setPlaying(false);
+        return;
+      }
+      scene.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      index += 1;
+      timer = window.setTimeout(advance, 10000);
+    };
+    let timer = window.setTimeout(advance, 10000);
+    const pauseOnGesture = () => setStoryPlaying(false);
+    window.addEventListener('wheel', pauseOnGesture, { once: true, passive: true });
+    window.addEventListener('touchstart', pauseOnGesture, { once: true, passive: true });
+    window.addEventListener('keydown', pauseOnGesture, { once: true });
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener('wheel', pauseOnGesture);
+      window.removeEventListener('touchstart', pauseOnGesture);
+      window.removeEventListener('keydown', pauseOnGesture);
+    };
+  }, [opened, storyPlaying]);
   const loadPicture = (setter) => (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -68,6 +131,7 @@ function App() {
   const chooseTheme = (id) => {
     setTheme(id);
     localStorage.setItem('wedding-theme', id);
+    setCustomizeOpen(false);
   };
   const share = async () => {
     const text = `With the blessings of our families, you are warmly invited to celebrate the wedding of ${groom.name} & ${bride.name}.\n\nWedding: 11 December 2026\nShagun: 6 December 2026\nVenue: Ramouli, Benipur, Darbhanga`;
@@ -75,7 +139,8 @@ function App() {
     if (navigator.share) { try { await navigator.share({ title: 'Rishi & Nitu — Wedding Invitation', text, url }); } catch {} }
     else window.open(`https://wa.me/?text=${encodeURIComponent(`${text}\n${url}`)}`, '_blank', 'noopener,noreferrer');
   };
-  return <main data-theme={theme}>
+  return <main data-theme={theme} className={`${opened ? 'invitation-opened' : ''} ${storyPlaying ? 'story-playing' : ''}`}>
+    {!opened && <div className="welcome-screen"><div className="welcome-card"><span className="welcome-ornament">❧</span><GaneshaArt className="ganesha-art welcome-ganesha"/><p className="welcome-blessing hindi">श्री गणेशाय नमः</p><p className="welcome-kicker">WITH THE BLESSINGS OF LORD GANESHA</p><h1>Rishi <i>&</i> Nitu</h1><p className="welcome-date">11 DECEMBER 2026 · BENIPUR</p><button className="open-invitation" onClick={openInvitation}><Heart size={16}/> Tap to open invitation</button><p className="welcome-hint">A love story in full bloom awaits</p></div></div>}
     <button className="customize-trigger" onClick={() => setCustomizeOpen(!customizeOpen)} aria-expanded={customizeOpen}><Palette size={16}/><span>Personalize</span>{customizeOpen && <X size={15}/>}</button>
     {customizeOpen && <aside className="customize-panel" aria-label="Invitation personalization">
       <p className="eyebrow">MAKE IT YOURS</p><h2>Personalize</h2>
@@ -90,6 +155,7 @@ function App() {
       <div className="hero-photo" />
       <div className="hero-shade" />
       <div className="hero-flower flower-a">✿</div><div className="hero-flower flower-b">❀</div>
+      <div className="hero-ganesha"><GaneshaArt className="ganesha-art"/><span className="ganesha-mantra hindi">श्री गणेशाय नमः</span></div>
       {portrait && <figure className="portrait-preview"><img src={portrait} alt="Your uploaded wedding photo" onError={() => { setPortrait(''); setUploadMessage('Your photo could not be displayed. Please choose a JPG, PNG, WebP, or GIF image.'); }}/><figcaption>Your photo</figcaption></figure>}
       <motion.div className="hero-content" initial="hidden" animate="visible" variants={{ visible: { transition: { staggerChildren: .18 } } }}>
         <motion.p className="eyebrow light" variants={fadeUp}>A CELEBRATION OF LOVE · प्रेम का उत्सव</motion.p>
@@ -107,6 +173,9 @@ function App() {
 
     <section className="invitation section-pad" id="invitation">
       <motion.div className="section-inner" initial="hidden" whileInView="visible" viewport={{ once: true, amount: .2 }} variants={fadeUp}>
+        <div className="invitation-layout">
+        <figure className="invitation-side single-couple-side"><img className="couple-photo" src="/illustration-traditional-indian-wedding-couple-groom-wears-off-white-illustration-traditional-indian-wedding-367711373.webp" alt="Bride and groom in traditional Indian wedding attire"/></figure>
+        <div className="invitation-message">
         <div className="ornament"><span>✿</span></div>
         <p className="eyebrow">WITH THE BLESSINGS OF OUR FAMILIES</p>
         <h2>A new chapter<br/><i>begins</i></h2>
@@ -114,6 +183,8 @@ function App() {
         <p className="invitation-copy">Two families, two hearts, and one beautiful beginning.<br className="desktop-only"/> We would be delighted to have you with us as we celebrate.</p>
         <p className="hindi invite-line">इस मंगल अवसर पर आपकी उपस्थिति हमारे लिए सौभाग्य होगी।</p>
         <div className="names-line"><span>{groom.name}</span><Heart size={16} strokeWidth={1.4}/><span>{bride.name}</span></div>
+        </div>
+        </div>
       </motion.div>
     </section>
 
@@ -147,7 +218,7 @@ function App() {
       <a className="map-link wedding-map" href="https://share.google/pjkR2dVfRk34hQsz0" target="_blank" rel="noreferrer"><MapPin size={16}/> LOCATION  ↗</a>
     </motion.div></section>
 
-    <footer className="footer section-pad"><div className="footer-ornament">❧</div><p className="eyebrow light">WE CAN’T WAIT TO CELEBRATE WITH YOU</p><h2>With love,<br/><i>Rishi & Nitu</i></h2><p className="hindi">आपका स्नेह और आशीर्वाद ही हमारा उपहार है</p><button className="share-button" onClick={share}><Share2 size={17}/> Share the invitation</button><p className="footer-small">MADE WITH LOVE · 2026</p></footer>
+    <footer className="footer section-pad"><div className="footer-ornament">❧</div><p className="eyebrow light">WE CAN’T WAIT TO CELEBRATE WITH YOU</p><h2>With love,<br/><i>Rishi & Nitu</i></h2><p className="hindi">आपका स्नेह और आशीर्वाद ही हमारा उपहार है</p><p className="family-regards">With warm regards from both families<br/><span className="hindi">दोनों परिवारों की ओर से सादर शुभकामनाएँ</span></p><button className="share-button" onClick={share}><Share2 size={17}/> Share the invitation</button><p className="footer-small">MADE WITH LOVE · 2026</p></footer>
   </main>;
 }
 export default App;
